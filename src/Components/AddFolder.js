@@ -1,6 +1,6 @@
 import React from 'react';
 import UserContext from './UserContext';
-import { Link } from 'react-router-dom';
+import '../App.css';
 
 
 class AddFolder extends React.Component {   
@@ -10,12 +10,10 @@ class AddFolder extends React.Component {
   render() {   
     const {handleAddFolder} = this.context;
     return(
-      <form onSubmit={(e) => handleAddFolder(e)}>
+      <form onSubmit={(e) => handleAddFolder(e).then(() => this.props.history.push('/'))}>
         <label htmlFor="folderInput">Enter folder name:</label>
         <input type="text" name="folderInput" id="folderInput" required/>
-        <Link to="/">
         <input type="submit" value="Submit" />
-        </Link >
       </form>
     )
   }

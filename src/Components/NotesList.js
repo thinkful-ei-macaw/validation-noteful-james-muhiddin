@@ -20,9 +20,17 @@ class NotesList extends Component {
         </li>
     )
   })
+    let buttonLink = (<div></div>);
+    if (this.props.folderId) {
+      buttonLink = (
+      <Link to={`/folder/${this.props.folderId}/add-note`}>
+      <button className="AddNote"> + Add Note</button>
+      </Link>)
+    }
 
   return (
     <div className="NotesList">
+     {buttonLink}
       <ul>
         {notesList}
       </ul>

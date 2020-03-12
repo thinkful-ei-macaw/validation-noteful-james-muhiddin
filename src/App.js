@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import {Route} from 'react-router-dom';
+import moment from 'moment';
 import './App.css';
 import Main from './Components/Main';
 import Note from './Components/Note';
 import UserContext from './Components/UserContext'
 import AddFolder from './Components/AddFolder';
+import AddNote from './Components/AddNote';
 
 class App extends Component {
 
@@ -19,7 +21,7 @@ handleDelete = (noteId) => {
     headers: { 'content-type': 'application/json' },
    })
   .then(res => res.json())
-  .then(notes => {
+  .then(() => {
     this.setState({notes: this.state.notes.filter(note => note.id !== noteId)})
   })
 }
@@ -29,18 +31,36 @@ handleAddFolder = (e) => {
 
   let folder = e.target.folderInput.value;
 
-  console.log(folder);
-  fetch(`http://localhost:9090/folders`,
+  return fetch(`http://localhost:9090/folders`,
   { method: 'POST',
   headers: { 'content-type': 'application/json' },
   body: JSON.stringify({name: folder})
   })
   .then(res => res.json())
-  .then(folders => {
-    this.setState({folders: this.state.folders.push({folder})})
+  .then(folder => {
+    this.setState({folders: [...this.state.folders, folder]})
   })
 }
 
+handleAddNote = (e, folderId) => { 
+  e.preventDefault();
+
+  let name = e.target.noteInput.value;
+  let content = e.target.noteContent.value;
+  let modified = moment(new Date());
+  console.log(this.state.notes);
+  return fetch(`http://localhost:9090/notes`,
+  { method: 'POST',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({name, content, modified, folderId})
+  })
+  .then(res => res.json())
+  .then(note => {
+    this.setState({notes: [...this.state.notes, {name, modified, folderId, content}]})
+    console.log(this.state.notes);
+  })
+
+}
 
 componentDidMount() {
   fetch('http://localhost:9090/folders')
@@ -62,7 +82,8 @@ render() {
       notesList: this.state.notes,
       foldersList: this.state.folders,
       handleDelete: this.handleDelete,
-      handleAddFolder: this.handleAddFolder
+      handleAddFolder: this.handleAddFolder,
+      handleAddNote: this.handleAddNote
     }}>
     <div className="App">
       <Route exact path="/"   
@@ -96,6 +117,7 @@ render() {
       )}}
     />
     <Route exact path='/add-folder' component={AddFolder} />
+    <Route exact path='/folder/:folderId/add-note' component={AddNote} />
     </div>
     </UserContext.Provider>
   );

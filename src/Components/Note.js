@@ -8,6 +8,7 @@ class Note extends Component {
     <p>{this.props.currentFolder.name}</p>
     <p>{this.props.currentNote.name}</p>
     <p>{this.props.currentNote.content}</p>
+    <button>Back</button>
     </div>
   );
   }
