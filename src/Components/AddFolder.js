@@ -1,6 +1,7 @@
 import React from 'react';
 import UserContext from './UserContext';
 import '../App.css';
+import PropTypes from 'prop-types';
 
 
 class AddFolder extends React.Component {   
@@ -17,6 +18,10 @@ class AddFolder extends React.Component {
       </form>
     )
   }
+}
+
+AddFolder.propTypes = {
+  history: PropTypes.func
 }
 
 export default AddFolder;

@@ -4,6 +4,7 @@ import NotesList from './NotesList';
 import '../App.css';
 import { Link } from 'react-router-dom';
 import ErrorBoundary from './ErrorBoundary';
+import PropTypes from 'prop-types';
 
 class Main extends Component {
  
@@ -28,5 +29,13 @@ class Main extends Component {
   );
   }
 }
+
+Main.propTypes = {
+  folderList: PropTypes.array,
+  history: PropTypes.func,
+  selectedFolderId: PropTypes.string
+}
+
+
 export default Main;
   

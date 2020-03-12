@@ -7,6 +7,7 @@ import Note from './Components/Note';
 import UserContext from './Components/UserContext'
 import AddFolder from './Components/AddFolder';
 import AddNote from './Components/AddNote';
+import PropTypes from 'prop-types';
 
 class App extends Component {
 
@@ -57,10 +58,23 @@ handleAddNote = (e, folderId) => {
   .then(res => res.json())
   .then(note => {
     this.setState({notes: [...this.state.notes, {name, modified, folderId, content}]})
-    console.log(this.state.notes);
   })
-
 }
+
+handleDeleteFolder = (e, folderId) => {
+  e.preventDefault();
+
+  console.log(folderId)
+  fetch(`http://localhost:9090/folders/${folderId}`,
+  { method: 'DELETE',
+  headers: { 'content-type': 'application/json' }
+  })
+  .then(res => res.json())
+  .then(() => {
+    this.setState({folders: this.state.folders.filter(folder => folder.id !== folderId)})
+  })
+}
+
 
 componentDidMount() {
   fetch('http://localhost:9090/folders')
@@ -82,6 +96,7 @@ render() {
       notesList: this.state.notes,
       foldersList: this.state.folders,
       handleDelete: this.handleDelete,
+      handleDeleteFolder: this.handleDeleteFolder,
       handleAddFolder: this.handleAddFolder,
       handleAddNote: this.handleAddNote
     }}>
@@ -94,7 +109,7 @@ render() {
         />
       )}
     />
-    <Route exact path="/folder/:folderId"   
+    <Route exact path="/folders/:folderId"   
       render={(props) => (
         <Main 
           foldersList = {this.state.folders}
@@ -104,9 +119,10 @@ render() {
         />
       )}
     />
-    <Route exact path="/note/:noteId"   
+    <Route exact path="/notes/:noteId"   
       render={(props) => {
-        let note = this.state.notes.find((note) => note.id === props.match.params.noteId);
+        let note = this.state.notes.find(note => note.id === props.match.params.noteId);
+        console.log(note);
         let folder = this.state.folders.find(folder => folder.id === note.folderId);
         return (
         <Note 
@@ -117,11 +133,22 @@ render() {
       )}}
     />
     <Route exact path='/add-folder' component={AddFolder} />
-    <Route exact path='/folder/:folderId/add-note' component={AddNote} />
+    <Route exact path='/folders/:folderId/add-note' component={AddNote} />
     </div>
     </UserContext.Provider>
   );
   } 
+}
+
+App.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      folderId: PropTypes.string,
+      noteId: PropTypes.string
+    })
+  }),
+
+  history: PropTypes.func,
 }
 
 export default App;

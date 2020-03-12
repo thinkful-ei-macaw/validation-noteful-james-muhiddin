@@ -62,11 +62,9 @@ li {
   margin: 20px;
 }
 
-
 .folderSelected {
   background-color: brown ;
 }
-
 button {
   cursor: pointer;
   padding: 10px;

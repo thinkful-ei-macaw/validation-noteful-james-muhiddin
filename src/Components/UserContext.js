@@ -1,6 +1,13 @@
 import React from 'react';
 
-const UserContext = React.createContext();
+const UserContext = React.createContext({
+  notes: [],
+  folders: [],
+  handleDeleteNote: () => {},
+  handleDeleteFolder: () => {},
+  handleAddFolder: () => {},
+  handleAddNote: () => {},
+});
 
 
 
