@@ -4,6 +4,7 @@ import './App.css';
 import Main from './Components/Main';
 import Note from './Components/Note';
 import UserContext from './Components/UserContext'
+import AddFolder from './Components/AddFolder';
 
 class App extends Component {
 
@@ -22,6 +23,24 @@ handleDelete = (noteId) => {
     this.setState({notes: this.state.notes.filter(note => note.id !== noteId)})
   })
 }
+
+handleAddFolder = (e) => { 
+  e.preventDefault();
+
+  let folder = e.target.folderInput.value;
+
+  console.log(folder);
+  fetch(`http://localhost:9090/folders`,
+  { method: 'POST',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({name: folder})
+  })
+  .then(res => res.json())
+  .then(folders => {
+    this.setState({folders: this.state.folders.push({folder})})
+  })
+}
+
 
 componentDidMount() {
   fetch('http://localhost:9090/folders')
@@ -42,7 +61,8 @@ render() {
     <UserContext.Provider value={{
       notesList: this.state.notes,
       foldersList: this.state.folders,
-      handleDelete: this.handleDelete
+      handleDelete: this.handleDelete,
+      handleAddFolder: this.handleAddFolder
     }}>
     <div className="App">
       <Route exact path="/"   
@@ -75,6 +95,7 @@ render() {
         />
       )}}
     />
+    <Route exact path='/add-folder' component={AddFolder} />
     </div>
     </UserContext.Provider>
   );
